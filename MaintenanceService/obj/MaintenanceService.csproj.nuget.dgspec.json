@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\cesar\\RiderProjects\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\MaintenanceService\\MaintenanceService.csproj": {}
+    "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\MaintenanceService\\MaintenanceService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\cesar\\RiderProjects\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\MaintenanceService\\MaintenanceService.csproj": {
+    "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\MaintenanceService\\MaintenanceService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cesar\\RiderProjects\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\MaintenanceService\\MaintenanceService.csproj",
+        "projectUniqueName": "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\MaintenanceService\\MaintenanceService.csproj",
         "projectName": "MaintenanceService",
-        "projectPath": "C:\\Users\\cesar\\RiderProjects\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\MaintenanceService\\MaintenanceService.csproj",
-        "packagesPath": "C:\\Users\\cesar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cesar\\RiderProjects\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\MaintenanceService\\obj\\",
+        "projectPath": "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\MaintenanceService\\MaintenanceService.csproj",
+        "packagesPath": "C:\\Users\\lucia\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\MaintenanceService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\cesar\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lucia\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -75,6 +72,10 @@
               "target": "Package",
               "version": "[6.5.0, )"
             },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.1.2, )"
+            },
             "coverlet.collector": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -111,7 +112,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "c:\\program files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

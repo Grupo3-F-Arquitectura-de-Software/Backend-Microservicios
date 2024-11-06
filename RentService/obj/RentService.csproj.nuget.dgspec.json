@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Joaquin\\Desktop\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\RentService\\RentService.csproj": {}
+    "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\RentService\\RentService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Joaquin\\Desktop\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\RentService\\RentService.csproj": {
+    "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\RentService\\RentService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Joaquin\\Desktop\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\RentService\\RentService.csproj",
+        "projectUniqueName": "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\RentService\\RentService.csproj",
         "projectName": "RentService",
-        "projectPath": "C:\\Users\\Joaquin\\Desktop\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\RentService\\RentService.csproj",
-        "packagesPath": "C:\\Users\\Joaquin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Joaquin\\Desktop\\DriveSafeMicroservices (con Maintenance)\\DriveSafeMicroservices\\RentService\\obj\\",
+        "projectPath": "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\RentService\\RentService.csproj",
+        "packagesPath": "C:\\Users\\lucia\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lucia\\RiderProjects\\Backend-Microservicios\\RentService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Joaquin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lucia\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -72,6 +69,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.1.2, )"
             }
           },
           "imports": [
@@ -93,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "c:\\program files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

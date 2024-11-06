@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentService", "RentService\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceService", "MaintenanceService\MaintenanceService.csproj", "{6B4D0A72-B82C-48A6-AC6E-D2879458F221}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSafe.Users", "DriveSafe.Users\DriveSafe.Users.csproj", "{2779D819-D3C3-47F4-BEEE-69B3A8B60123}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{6B4D0A72-B82C-48A6-AC6E-D2879458F221}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B4D0A72-B82C-48A6-AC6E-D2879458F221}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B4D0A72-B82C-48A6-AC6E-D2879458F221}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2779D819-D3C3-47F4-BEEE-69B3A8B60123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2779D819-D3C3-47F4-BEEE-69B3A8B60123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2779D819-D3C3-47F4-BEEE-69B3A8B60123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2779D819-D3C3-47F4-BEEE-69B3A8B60123}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
