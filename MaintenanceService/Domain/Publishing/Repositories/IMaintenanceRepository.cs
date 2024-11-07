@@ -7,4 +7,6 @@ public interface IMaintenanceRepository
     Task<List<Maintenance>> GetAllAsync();
     Task<Maintenance> GetByIdAsync(int id);
     Task<int> SaveAsync(Maintenance data);
+    Task<bool> UpdateAsync(Maintenance data);
+    Task<bool> DeleteAsync(int id);
 }

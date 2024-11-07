@@ -7,68 +7,98 @@ using RentService.Domain.Publishing.Services;
 using RentService.Infrastructure.Publishing.Persistence;
 using RentService.Infrastructure.Shared.Context;
 using RentService.Presentation.Mapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using VehicleService.Infrastructure.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient();
-
-
-// CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllPolicy", 
-        policy => policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-});
-
-// Configuration
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json", true, true)
-    .Build();
-
-builder.Services.AddSingleton(configuration);
-
-// Add controllers
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.PropertyNamingPolicy = null;
-});
-
-// Swagger
+// Add services to the container
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "RentService API",
-        Description = "An ASP.NET Core Web API for managing rents",
-    });
-});
+builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<AuthenticatedHttpClient>();
 
-// Register the Rent services and repositories
+// Configuración de AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+// Configuración de la base de datos
+builder.Services.AddDbContext<RentDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")))
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors());
+
+// Registro de servicios
 builder.Services.AddScoped<IRentRepository, RentRepository>();
 builder.Services.AddScoped<IRentCommandService, RentCommandService>();
 builder.Services.AddScoped<IRentQueryService, RentQueryService>();
 
-// Add AutoMapper (if necessary)
-builder.Services.AddAutoMapper(typeof(RequestToModel), typeof(ModelToRequest), typeof(ModelToResponse));
+// Configuración JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"])),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
-// Database context for RentService
-var connectionString = builder.Configuration.GetConnectionString("RentDB");
-
-builder.Services.AddDbContext<RentDbContext>(dbContextOptions =>
+// Configuración CORS
+builder.Services.AddCors(options =>
 {
-    dbContextOptions.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    options.AddPolicy("AllowAllPolicy",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
-builder.Services.AddApplicationInsightsTelemetry();
+// Configuración Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RentService API", Version = "v1" });
+    
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 var app = builder.Build();
 
-// Apply migrations or ensure database exists
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Ensure database is created
 using (var scope = app.Services.CreateScope())
 using (var context = scope.ServiceProvider.GetService<RentDbContext>())
 {
@@ -78,13 +108,12 @@ using (var context = scope.ServiceProvider.GetService<RentDbContext>())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "VehicleService API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RentService API v1");
 });
 
-app.UseCors("AllowAllPolicy"); 
+app.UseCors("AllowAllPolicy");
 app.UseHttpsRedirection();
-
-
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();

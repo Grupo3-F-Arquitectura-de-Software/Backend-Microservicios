@@ -7,86 +7,115 @@ using VehicleService.Domain.Publishing.Services;
 using VehicleService.Infrastructure.Publishing.Persistence;
 using VehicleService.Infrastructure.Shared.Context;
 using VehicleService.Presentation.Mapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using VehicleService.Infrastructure.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<AuthenticatedHttpClient>();
 
-// CORS
+// Configuración de AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+// Configuración de la base de datos
+builder.Services.AddDbContext<VehicleDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")))
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors());
+
+// Registro de servicios
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IVehicleCommandService, VehicleCommandService>();
+builder.Services.AddScoped<IVehicleQueryService, VehicleQueryService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuthenticatedHttpClient>();
+
+// Configuración JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"])),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+// Configuración CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllPolicy", 
-        policy => policy.AllowAnyOrigin()
+    options.AddPolicy("AllowAllPolicy",
+        builder => builder
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
 
-// Configuration
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json", true, true)
-    .Build();
-
-builder.Services.AddSingleton(configuration);
-
-// Add controllers
-builder.Services.AddControllers().AddJsonOptions(options =>
+// Configuración Swagger
+builder.Services.AddSwaggerGen(c =>
 {
-    options.JsonSerializerOptions.PropertyNamingPolicy = null;
-});
-
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "VehicleService API", Version = "v1" });
+    
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Version = "v1",
-        Title = "VehicleService API",
-        Description = "An ASP.NET Core Web API for managing vehicles",
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 
-// Register the Vehicle services and repositories
-builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
-builder.Services.AddScoped<IVehicleCommandService, VehicleCommandService>();
-builder.Services.AddScoped<IVehicleQueryService, VehicleQueryService>();
-
-// Add AutoMapper (if necessary)
-builder.Services.AddAutoMapper(typeof(RequestToModel), typeof(ModelToRequest), typeof(ModelToResponse));
-
-// Database context for VehicleService
-var connectionString = builder.Configuration.GetConnectionString("VehicleDB");
-
-builder.Services.AddDbContext<VehicleDbContext>(dbContextOptions =>
-{
-    dbContextOptions.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
-        mySqlOptions => mySqlOptions.EnableRetryOnFailure())  // Reintentos en caso de errores transitorios
-        .LogTo(Console.WriteLine, LogLevel.Information);      // Registra eventos de la base de datos
-});
-
-builder.Services.AddApplicationInsightsTelemetry();
-
 var app = builder.Build();
 
-// Apply migrations or ensure database exists
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Ensure database is created
 using (var scope = app.Services.CreateScope())
 using (var context = scope.ServiceProvider.GetService<VehicleDbContext>())
 {
     context.Database.EnsureCreated();
 }
 
-
-// Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "VehicleService API v1");
 });
 
-
-app.UseCors("AllowAllPolicy"); 
+app.UseCors("AllowAllPolicy");
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
