@@ -2,11 +2,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/maintenance/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7001
+          "Host": "maintenanceservice",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/maintenance/{everything}",
@@ -17,11 +17,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/vehicle/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7002
+          "Host": "vehicleservice",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/vehicle/{everything}",
@@ -32,11 +32,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/rent/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7003
+          "Host": "rentservice",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/rent/{everything}",
@@ -44,11 +44,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/users/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7004
+          "Host": "userservice",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/users/{everything}",
@@ -56,6 +56,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7000"
+    "BaseUrl": "http://localhost:7000"
   }
-} 
+}
